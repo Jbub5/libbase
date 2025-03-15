@@ -261,6 +261,7 @@ cc_test {
 cc_benchmark {
     name: "libbase_benchmark",
     defaults: ["libbase_cflags_defaults"],
+    host_supported: true,
 
     srcs: [
         "file_benchmark.cpp",
