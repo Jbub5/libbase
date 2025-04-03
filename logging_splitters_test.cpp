@@ -51,7 +51,7 @@ TEST(logging_splitters, NewlineSplitter_BasicString) {
   TestNewlineSplitter("normal string", std::vector<std::string>{"normal string"});
 }
 
-TEST(logging_splitters, NewlineSplitter_ormalBasicStringTrailingNewline) {
+TEST(logging_splitters, NewlineSplitter_NormalBasicStringTrailingNewline) {
   TestNewlineSplitter("normal string\n", std::vector<std::string>{"normal string", ""});
 }
 
