@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#define LOG_TAG "logging_test_tag"
 #include "android-base/logging.h"
 
 #include <libgen.h>
@@ -28,6 +29,7 @@
 #include <thread>
 
 #include "android-base/file.h"
+#include "android-base/properties.h"
 #include "android-base/scopeguard.h"
 #include "android-base/stringprintf.h"
 #include "android-base/test_utils.h"
@@ -348,19 +350,56 @@ TEST(logging, LOG_STREAM_VERBOSE_enabled) {
     ASSERT_EQ("", cap1.str());                                   \
   }
 
-#define CHECK_LOG_ENABLED(severity) \
-  { \
+#if defined(__ANDROID__)
+static std::string SeverityToPropertyString(android::base::LogSeverity severity) {
+  switch (severity) {
+    case android::base::VERBOSE:
+      return "V";
+    case android::base::DEBUG:
+      return "D";
+    case android::base::INFO:
+      return "I";
+    case android::base::WARNING:
+      return "W";
+    case android::base::ERROR:
+      return "E";
+    case android::base::FATAL_WITHOUT_ABORT:
+    case android::base::FATAL:
+    default:
+      return "A";
+  }
+}
+
+#define CHECK_LOG_ENABLED_WITH_PROPERTY(severity)                                               \
+  {                                                                                             \
+    android::base::ScopedLogSeverity sls1(android::base::FATAL);                                \
+    auto log_tag_property = std::string("log.tag.") + LOG_TAG;                                  \
+    EXPECT_TRUE(android::base::SetProperty(log_tag_property,                                    \
+                                           SeverityToPropertyString(android::base::severity))); \
+    auto reset_tag_property_guard = android::base::make_scope_guard(                            \
+        [=] { android::base::SetProperty(log_tag_property, ""); });                             \
+    CapturedStderr cap2;                                                                        \
+    LOG(severity) << "foobar";                                                                  \
+    CheckMessage(cap2, android::base::severity, "foobar", LOG_TAG);                             \
+  }
+#else
+#define CHECK_LOG_ENABLED_WITH_PROPERTY(severity)
+#endif
+
+#define CHECK_LOG_ENABLED(severity)                                 \
+  {                                                                 \
     android::base::ScopedLogSeverity sls2(android::base::severity); \
-    CapturedStderr cap2; \
-    LOG(severity) << "foobar"; \
-    CheckMessage(cap2, android::base::severity, "foobar"); \
-  } \
-  { \
+    CapturedStderr cap2;                                            \
+    LOG(severity) << "foobar";                                      \
+    CheckMessage(cap2, android::base::severity, "foobar");          \
+  }                                                                 \
+  {                                                                 \
     android::base::ScopedLogSeverity sls2(android::base::severity); \
-    CapturedStderr cap2; \
-    LOG(::android::base::severity) << "foobar"; \
-    CheckMessage(cap2, android::base::severity, "foobar"); \
-  } \
+    CapturedStderr cap2;                                            \
+    LOG(::android::base::severity) << "foobar";                     \
+    CheckMessage(cap2, android::base::severity, "foobar");          \
+  }                                                                 \
+  CHECK_LOG_ENABLED_WITH_PROPERTY(severity)
 
 TEST(logging, LOG_FATAL) {
   ASSERT_DEATH({SuppressAbortUI(); LOG(FATAL) << "foobar";}, "foobar");
@@ -413,6 +452,7 @@ TEST(logging, LOG_VERBOSE_enabled) {
 
 #undef CHECK_LOG_DISABLED
 #undef CHECK_LOG_ENABLED
+#undef CHECK_LOG_ENABLED_WITH_PROPERTY
 
 TEST(logging, LOG_complex_param) {
 #define CHECK_LOG_COMBINATION(use_scoped_log_severity_info, use_logging_severity_info)         \
