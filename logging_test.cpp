@@ -129,32 +129,32 @@ TEST(logging, DCHECK) {
 }
 
 
-#define CHECK_WOULD_LOG_DISABLED(severity)                                               \
-  static_assert(android::base::severity < android::base::FATAL, "Bad input");            \
-  for (size_t i = static_cast<size_t>(android::base::severity) + 1;                      \
+#define CHECK_WOULD_LOG_DISABLED(SEVERITY)                                               \
+  static_assert(android::base::SEVERITY < android::base::FATAL, "Bad input");            \
+  for (size_t i = static_cast<size_t>(android::base::SEVERITY) + 1;                      \
        i <= static_cast<size_t>(android::base::FATAL);                                   \
        ++i) {                                                                            \
     {                                                                                    \
       android::base::ScopedLogSeverity sls2(static_cast<android::base::LogSeverity>(i)); \
-      EXPECT_FALSE(WOULD_LOG(severity)) << i;                                            \
+      EXPECT_FALSE(WOULD_LOG(SEVERITY)) << i;                                            \
     }                                                                                    \
     {                                                                                    \
       android::base::ScopedLogSeverity sls2(static_cast<android::base::LogSeverity>(i)); \
-      EXPECT_FALSE(WOULD_LOG(::android::base::severity)) << i;                           \
+      EXPECT_FALSE(WOULD_LOG(::android::base::SEVERITY)) << i;                           \
     }                                                                                    \
   }                                                                                      \
 
-#define CHECK_WOULD_LOG_ENABLED(severity)                                                \
+#define CHECK_WOULD_LOG_ENABLED(SEVERITY)                                                \
   for (size_t i = static_cast<size_t>(android::base::VERBOSE);                           \
-       i <= static_cast<size_t>(android::base::severity);                                \
+       i <= static_cast<size_t>(android::base::SEVERITY);                                \
        ++i) {                                                                            \
     {                                                                                    \
       android::base::ScopedLogSeverity sls2(static_cast<android::base::LogSeverity>(i)); \
-      EXPECT_TRUE(WOULD_LOG(severity)) << i;                                             \
+      EXPECT_TRUE(WOULD_LOG(SEVERITY)) << i;                                             \
     }                                                                                    \
     {                                                                                    \
       android::base::ScopedLogSeverity sls2(static_cast<android::base::LogSeverity>(i)); \
-      EXPECT_TRUE(WOULD_LOG(::android::base::severity)) << i;                            \
+      EXPECT_TRUE(WOULD_LOG(::android::base::SEVERITY)) << i;                            \
     }                                                                                    \
   }                                                                                      \
 
@@ -257,34 +257,34 @@ static void CheckMessage(CapturedStderr& cap, android::base::LogSeverity severit
   return CheckMessage(output, severity, expected, expected_tag);
 }
 
-#define CHECK_LOG_STREAM_DISABLED(severity)                      \
+#define CHECK_LOG_STREAM_DISABLED(SEVERITY)                      \
   {                                                              \
     android::base::ScopedLogSeverity sls1(android::base::FATAL); \
     CapturedStderr cap1;                                         \
-    LOG_STREAM(severity) << "foo bar";                           \
+    LOG_STREAM(SEVERITY) << "foo bar";                           \
     cap1.Stop();                                                 \
     ASSERT_EQ("", cap1.str());                                   \
   }                                                              \
   {                                                              \
     android::base::ScopedLogSeverity sls1(android::base::FATAL); \
     CapturedStderr cap1;                                         \
-    LOG_STREAM(::android::base::severity) << "foo bar";          \
+    LOG_STREAM(::android::base::SEVERITY) << "foo bar";          \
     cap1.Stop();                                                 \
     ASSERT_EQ("", cap1.str());                                   \
   }
 
-#define CHECK_LOG_STREAM_ENABLED(severity) \
+#define CHECK_LOG_STREAM_ENABLED(SEVERITY) \
   { \
-    android::base::ScopedLogSeverity sls2(android::base::severity); \
+    android::base::ScopedLogSeverity sls2(android::base::SEVERITY); \
     CapturedStderr cap2; \
-    LOG_STREAM(severity) << "foobar"; \
-    CheckMessage(cap2, android::base::severity, "foobar"); \
+    LOG_STREAM(SEVERITY) << "foobar"; \
+    CheckMessage(cap2, android::base::SEVERITY, "foobar"); \
   } \
   { \
-    android::base::ScopedLogSeverity sls2(android::base::severity); \
+    android::base::ScopedLogSeverity sls2(android::base::SEVERITY); \
     CapturedStderr cap2; \
-    LOG_STREAM(::android::base::severity) << "foobar"; \
-    CheckMessage(cap2, android::base::severity, "foobar"); \
+    LOG_STREAM(::android::base::SEVERITY) << "foobar"; \
+    CheckMessage(cap2, android::base::SEVERITY, "foobar"); \
   } \
 
 TEST(logging, LOG_STREAM_FATAL_WITHOUT_ABORT_enabled) {
@@ -334,18 +334,18 @@ TEST(logging, LOG_STREAM_VERBOSE_enabled) {
 #undef CHECK_LOG_STREAM_DISABLED
 #undef CHECK_LOG_STREAM_ENABLED
 
-#define CHECK_LOG_DISABLED(severity)                             \
+#define CHECK_LOG_DISABLED(SEVERITY)                             \
   {                                                              \
     android::base::ScopedLogSeverity sls1(android::base::FATAL); \
     CapturedStderr cap1;                                         \
-    LOG(severity) << "foo bar";                                  \
+    LOG(SEVERITY) << "foo bar";                                  \
     cap1.Stop();                                                 \
     ASSERT_EQ("", cap1.str());                                   \
   }                                                              \
   {                                                              \
     android::base::ScopedLogSeverity sls1(android::base::FATAL); \
     CapturedStderr cap1;                                         \
-    LOG(::android::base::severity) << "foo bar";                 \
+    LOG(::android::base::SEVERITY) << "foo bar";                 \
     cap1.Stop();                                                 \
     ASSERT_EQ("", cap1.str());                                   \
   }
@@ -386,20 +386,20 @@ static std::string SeverityToPropertyString(android::base::LogSeverity severity)
 #define CHECK_LOG_ENABLED_WITH_PROPERTY(severity)
 #endif
 
-#define CHECK_LOG_ENABLED(severity)                                 \
+#define CHECK_LOG_ENABLED(SEVERITY)                                 \
   {                                                                 \
-    android::base::ScopedLogSeverity sls2(android::base::severity); \
+    android::base::ScopedLogSeverity sls2(android::base::SEVERITY); \
     CapturedStderr cap2;                                            \
-    LOG(severity) << "foobar";                                      \
-    CheckMessage(cap2, android::base::severity, "foobar");          \
+    LOG(SEVERITY) << "foobar";                                      \
+    CheckMessage(cap2, android::base::SEVERITY, "foobar");          \
   }                                                                 \
   {                                                                 \
-    android::base::ScopedLogSeverity sls2(android::base::severity); \
+    android::base::ScopedLogSeverity sls2(android::base::SEVERITY); \
     CapturedStderr cap2;                                            \
-    LOG(::android::base::severity) << "foobar";                     \
-    CheckMessage(cap2, android::base::severity, "foobar");          \
+    LOG(::android::base::SEVERITY) << "foobar";                     \
+    CheckMessage(cap2, android::base::SEVERITY, "foobar");          \
   }                                                                 \
-  CHECK_LOG_ENABLED_WITH_PROPERTY(severity)
+  CHECK_LOG_ENABLED_WITH_PROPERTY(SEVERITY)
 
 TEST(logging, LOG_FATAL) {
   ASSERT_DEATH({SuppressAbortUI(); LOG(FATAL) << "foobar";}, "foobar");
@@ -522,36 +522,36 @@ TEST(logging, LOG_does_not_have_dangling_if) {
   EXPECT_FALSE(flag) << "LOG macro probably has a dangling if with no else";
 }
 
-#define CHECK_PLOG_DISABLED(severity)                            \
+#define CHECK_PLOG_DISABLED(SEVERITY)                            \
   {                                                              \
     android::base::ScopedLogSeverity sls1(android::base::FATAL); \
     CapturedStderr cap1;                                         \
-    PLOG(severity) << "foo bar";                                 \
+    PLOG(SEVERITY) << "foo bar";                                 \
     cap1.Stop();                                                 \
     ASSERT_EQ("", cap1.str());                                   \
   }                                                              \
   {                                                              \
     android::base::ScopedLogSeverity sls1(android::base::FATAL); \
     CapturedStderr cap1;                                         \
-    PLOG(severity) << "foo bar";                                 \
+    PLOG(SEVERITY) << "foo bar";                                 \
     cap1.Stop();                                                 \
     ASSERT_EQ("", cap1.str());                                   \
   }
 
-#define CHECK_PLOG_ENABLED(severity) \
+#define CHECK_PLOG_ENABLED(SEVERITY) \
   { \
-    android::base::ScopedLogSeverity sls2(android::base::severity); \
+    android::base::ScopedLogSeverity sls2(android::base::SEVERITY); \
     CapturedStderr cap2; \
     errno = ENOENT; \
-    PLOG(severity) << "foobar"; \
-    CheckMessage(cap2, android::base::severity, "foobar: No such file or directory"); \
+    PLOG(SEVERITY) << "foobar"; \
+    CheckMessage(cap2, android::base::SEVERITY, "foobar: No such file or directory"); \
   } \
   { \
-    android::base::ScopedLogSeverity sls2(android::base::severity); \
+    android::base::ScopedLogSeverity sls2(android::base::SEVERITY); \
     CapturedStderr cap2; \
     errno = ENOENT; \
-    PLOG(severity) << "foobar"; \
-    CheckMessage(cap2, android::base::severity, "foobar: No such file or directory"); \
+    PLOG(SEVERITY) << "foobar"; \
+    CheckMessage(cap2, android::base::SEVERITY, "foobar: No such file or directory"); \
   } \
 
 TEST(logging, PLOG_FATAL) {
