@@ -288,7 +288,7 @@ static void CheckMessage(CapturedStderr& cap, android::base::LogSeverity severit
   } \
 
 TEST(logging, LOG_STREAM_FATAL_WITHOUT_ABORT_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_LOG_STREAM_ENABLED(FATAL_WITHOUT_ABORT));
+  CHECK_LOG_STREAM_ENABLED(FATAL_WITHOUT_ABORT);
 }
 
 TEST(logging, LOG_STREAM_ERROR_disabled) {
@@ -296,7 +296,7 @@ TEST(logging, LOG_STREAM_ERROR_disabled) {
 }
 
 TEST(logging, LOG_STREAM_ERROR_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_LOG_STREAM_ENABLED(ERROR));
+  CHECK_LOG_STREAM_ENABLED(ERROR);
 }
 
 TEST(logging, LOG_STREAM_WARNING_disabled) {
@@ -304,7 +304,7 @@ TEST(logging, LOG_STREAM_WARNING_disabled) {
 }
 
 TEST(logging, LOG_STREAM_WARNING_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_LOG_STREAM_ENABLED(WARNING));
+  CHECK_LOG_STREAM_ENABLED(WARNING);
 }
 
 TEST(logging, LOG_STREAM_INFO_disabled) {
@@ -312,7 +312,7 @@ TEST(logging, LOG_STREAM_INFO_disabled) {
 }
 
 TEST(logging, LOG_STREAM_INFO_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_LOG_STREAM_ENABLED(INFO));
+  CHECK_LOG_STREAM_ENABLED(INFO);
 }
 
 TEST(logging, LOG_STREAM_DEBUG_disabled) {
@@ -320,7 +320,7 @@ TEST(logging, LOG_STREAM_DEBUG_disabled) {
 }
 
 TEST(logging, LOG_STREAM_DEBUG_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_LOG_STREAM_ENABLED(DEBUG));
+  CHECK_LOG_STREAM_ENABLED(DEBUG);
 }
 
 TEST(logging, LOG_STREAM_VERBOSE_disabled) {
@@ -328,7 +328,7 @@ TEST(logging, LOG_STREAM_VERBOSE_disabled) {
 }
 
 TEST(logging, LOG_STREAM_VERBOSE_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_LOG_STREAM_ENABLED(VERBOSE));
+  CHECK_LOG_STREAM_ENABLED(VERBOSE);
 }
 
 #undef CHECK_LOG_STREAM_DISABLED
@@ -407,7 +407,7 @@ TEST(logging, LOG_FATAL) {
 }
 
 TEST(logging, LOG_FATAL_WITHOUT_ABORT_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_LOG_ENABLED(FATAL_WITHOUT_ABORT));
+  CHECK_LOG_ENABLED(FATAL_WITHOUT_ABORT);
 }
 
 TEST(logging, LOG_ERROR_disabled) {
@@ -415,7 +415,7 @@ TEST(logging, LOG_ERROR_disabled) {
 }
 
 TEST(logging, LOG_ERROR_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_LOG_ENABLED(ERROR));
+  CHECK_LOG_ENABLED(ERROR);
 }
 
 TEST(logging, LOG_WARNING_disabled) {
@@ -423,7 +423,7 @@ TEST(logging, LOG_WARNING_disabled) {
 }
 
 TEST(logging, LOG_WARNING_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_LOG_ENABLED(WARNING));
+  CHECK_LOG_ENABLED(WARNING);
 }
 
 TEST(logging, LOG_INFO_disabled) {
@@ -431,7 +431,7 @@ TEST(logging, LOG_INFO_disabled) {
 }
 
 TEST(logging, LOG_INFO_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_LOG_ENABLED(INFO));
+  CHECK_LOG_ENABLED(INFO);
 }
 
 TEST(logging, LOG_DEBUG_disabled) {
@@ -439,7 +439,7 @@ TEST(logging, LOG_DEBUG_disabled) {
 }
 
 TEST(logging, LOG_DEBUG_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_LOG_ENABLED(DEBUG));
+  CHECK_LOG_ENABLED(DEBUG);
 }
 
 TEST(logging, LOG_VERBOSE_disabled) {
@@ -447,7 +447,7 @@ TEST(logging, LOG_VERBOSE_disabled) {
 }
 
 TEST(logging, LOG_VERBOSE_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_LOG_ENABLED(VERBOSE));
+  CHECK_LOG_ENABLED(VERBOSE);
 }
 
 #undef CHECK_LOG_DISABLED
@@ -487,7 +487,7 @@ TEST(logging, LOG_does_not_clobber_errno) {
   LOG(INFO) << (errno = 67890);
   EXPECT_EQ(12345, errno) << "errno was not restored";
 
-  ASSERT_NO_FATAL_FAILURE(CheckMessage(cap, android::base::INFO, "67890"));
+  CheckMessage(cap, android::base::INFO, "67890");
 }
 
 TEST(logging, PLOG_does_not_clobber_errno) {
@@ -496,7 +496,7 @@ TEST(logging, PLOG_does_not_clobber_errno) {
   PLOG(INFO) << (errno = 67890);
   EXPECT_EQ(12345, errno) << "errno was not restored";
 
-  ASSERT_NO_FATAL_FAILURE(CheckMessage(cap, android::base::INFO, "67890"));
+  CheckMessage(cap, android::base::INFO, "67890");
 }
 
 TEST(logging, LOG_does_not_have_dangling_if) {
@@ -560,7 +560,7 @@ TEST(logging, PLOG_FATAL) {
 }
 
 TEST(logging, PLOG_FATAL_WITHOUT_ABORT_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_PLOG_ENABLED(FATAL_WITHOUT_ABORT));
+  CHECK_PLOG_ENABLED(FATAL_WITHOUT_ABORT);
 }
 
 TEST(logging, PLOG_ERROR_disabled) {
@@ -568,7 +568,7 @@ TEST(logging, PLOG_ERROR_disabled) {
 }
 
 TEST(logging, PLOG_ERROR_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_PLOG_ENABLED(ERROR));
+  CHECK_PLOG_ENABLED(ERROR);
 }
 
 TEST(logging, PLOG_WARNING_disabled) {
@@ -576,7 +576,7 @@ TEST(logging, PLOG_WARNING_disabled) {
 }
 
 TEST(logging, PLOG_WARNING_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_PLOG_ENABLED(WARNING));
+  CHECK_PLOG_ENABLED(WARNING);
 }
 
 TEST(logging, PLOG_INFO_disabled) {
@@ -584,7 +584,7 @@ TEST(logging, PLOG_INFO_disabled) {
 }
 
 TEST(logging, PLOG_INFO_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_PLOG_ENABLED(INFO));
+  CHECK_PLOG_ENABLED(INFO);
 }
 
 TEST(logging, PLOG_DEBUG_disabled) {
@@ -592,7 +592,7 @@ TEST(logging, PLOG_DEBUG_disabled) {
 }
 
 TEST(logging, PLOG_DEBUG_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_PLOG_ENABLED(DEBUG));
+  CHECK_PLOG_ENABLED(DEBUG);
 }
 
 TEST(logging, PLOG_VERBOSE_disabled) {
@@ -600,7 +600,7 @@ TEST(logging, PLOG_VERBOSE_disabled) {
 }
 
 TEST(logging, PLOG_VERBOSE_enabled) {
-  ASSERT_NO_FATAL_FAILURE(CHECK_PLOG_ENABLED(VERBOSE));
+  CHECK_PLOG_ENABLED(VERBOSE);
 }
 
 #undef CHECK_PLOG_DISABLED
@@ -613,7 +613,7 @@ TEST(logging, UNIMPLEMENTED) {
   CapturedStderr cap;
   errno = ENOENT;
   UNIMPLEMENTED(ERROR);
-  ASSERT_NO_FATAL_FAILURE(CheckMessage(cap, android::base::ERROR, expected.c_str()));
+  CheckMessage(cap, android::base::ERROR, expected.c_str());
 }
 
 static void NoopAborter(const char* msg ATTRIBUTE_UNUSED) {
