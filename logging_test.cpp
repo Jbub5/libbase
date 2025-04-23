@@ -209,16 +209,12 @@ TEST(logging, WOULD_LOG_VERBOSE_enabled) {
 #undef CHECK_WOULD_LOG_DISABLED
 #undef CHECK_WOULD_LOG_ENABLED
 
-
 #if !defined(_WIN32)
+static const char log_characters[] = "VDIWEFF";
+static_assert(arraysize(log_characters) - 1 == android::base::FATAL + 1,
+              "Mismatch in size of log_characters and values in LogSeverity");
 static std::string make_log_pattern(const char* expected_tag, android::base::LogSeverity severity,
                                     const char* message) {
-  static const char log_characters[] = "VDIWEFF";
-  static_assert(arraysize(log_characters) - 1 == android::base::FATAL + 1,
-                "Mismatch in size of log_characters and values in LogSeverity");
-  char log_char = log_characters[severity];
-  std::string holder(__FILE__);
-
   // `message` can have a function name like "TestBody()". The parentheses should be escaped,
   // otherwise it will be interpreted as a capturing group when it is used as a regex.  Below
   // replaces either '(' or ')' to '\(' or '\)', respectively.
@@ -226,9 +222,10 @@ static std::string make_log_pattern(const char* expected_tag, android::base::Log
   std::string message_escaped = std::regex_replace(message, parentheses, R"(\$&)");
 
   const char* tag_pattern = expected_tag != nullptr ? expected_tag : ".+";
+  std::string holder(__FILE__);
   return android::base::StringPrintf(
-      R"(\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3} \s*\d+ \s*\d+ %c %s\s*: %s:\d+ %s)", log_char,
-      tag_pattern, basename(&holder[0]), message_escaped.c_str());
+      R"(\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3} \s*\d+ \s*\d+ %c %s\s*: %s:\d+ %s)",
+      log_characters[severity], tag_pattern, basename(&holder[0]), message_escaped.c_str());
 }
 #endif
 
@@ -351,36 +348,17 @@ TEST(logging, LOG_STREAM_VERBOSE_enabled) {
   }
 
 #if defined(__ANDROID__)
-static std::string SeverityToPropertyString(android::base::LogSeverity severity) {
-  switch (severity) {
-    case android::base::VERBOSE:
-      return "V";
-    case android::base::DEBUG:
-      return "D";
-    case android::base::INFO:
-      return "I";
-    case android::base::WARNING:
-      return "W";
-    case android::base::ERROR:
-      return "E";
-    case android::base::FATAL_WITHOUT_ABORT:
-    case android::base::FATAL:
-    default:
-      return "A";
-  }
-}
-
-#define CHECK_LOG_ENABLED_WITH_PROPERTY(severity)                                               \
-  {                                                                                             \
-    android::base::ScopedLogSeverity sls1(android::base::FATAL);                                \
-    auto log_tag_property = std::string("log.tag.") + LOG_TAG;                                  \
-    EXPECT_TRUE(android::base::SetProperty(log_tag_property,                                    \
-                                           SeverityToPropertyString(android::base::severity))); \
-    auto reset_tag_property_guard = android::base::make_scope_guard(                            \
-        [=] { android::base::SetProperty(log_tag_property, ""); });                             \
-    CapturedStderr cap2;                                                                        \
-    LOG(severity) << "foobar";                                                                  \
-    CheckMessage(cap2, android::base::severity, "foobar", LOG_TAG);                             \
+#define CHECK_LOG_ENABLED_WITH_PROPERTY(SEVERITY)                    \
+  {                                                                  \
+    android::base::ScopedLogSeverity sls1(android::base::FATAL);     \
+    auto log_tag_property = std::string("log.tag.") + LOG_TAG;       \
+    EXPECT_TRUE(android::base::SetProperty(log_tag_property,         \
+        std::string(1, log_characters[android::base::SEVERITY])));   \
+    auto reset_tag_property_guard = android::base::make_scope_guard( \
+        [=] { android::base::SetProperty(log_tag_property, ""); });  \
+    CapturedStderr cap2;                                             \
+    LOG(SEVERITY) << "foobar";                                       \
+    CheckMessage(cap2, android::base::SEVERITY, "foobar", LOG_TAG);  \
   }
 #else
 #define CHECK_LOG_ENABLED_WITH_PROPERTY(severity)
