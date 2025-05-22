@@ -166,10 +166,7 @@ static std::string StderrOutputGenerator(const struct timespec& ts, int pid, uin
   size_t n = strftime(timestamp, sizeof(timestamp), "%m-%d %H:%M:%S", &now);
   snprintf(timestamp + n, sizeof(timestamp) - n, ".%03ld", ts.tv_nsec / (1000 * 1000));
 
-  static const char log_characters[] = "VDIWEFF";
-  static_assert(arraysize(log_characters) - 1 == FATAL + 1,
-                "Mismatch in size of log_characters and values in LogSeverity");
-  char severity_char = log_characters[severity];
+  char severity_char = kSeverityChars[severity];
   std::string line_prefix;
   const char* real_tag = tag ? tag : "nullptr";
   if (file != nullptr) {
