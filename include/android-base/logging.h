@@ -92,6 +92,11 @@ enum LogSeverity {
   FATAL,
 };
 
+// Map from LogSeverity to the corresponding character.
+static constexpr char kSeverityChars[] = "VDIWEFF";
+static_assert(arraysize(kSeverityChars) - 1 == android::base::FATAL + 1,
+              "Mismatch in size of kSeverityChars and values in LogSeverity");
+
 enum LogId {
   DEFAULT,
   MAIN,
