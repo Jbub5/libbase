@@ -203,6 +203,7 @@ cc_test {
         "properties_test.cpp",
         "result_test.cpp",
         "scopeguard_test.cpp",
+        "stringify_test.cpp",
         "stringprintf_test.cpp",
         "strings_test.cpp",
         "test_main.cpp",
