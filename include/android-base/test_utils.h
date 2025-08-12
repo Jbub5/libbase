@@ -23,6 +23,26 @@
 #include <android-base/file.h>
 #include <android-base/macros.h>
 
+namespace android {
+namespace base {
+
+// Prevents the compiler from optimizing away an otherwise unused expression.
+template <class T>
+static inline void DoNotOptimize(T const& value) {
+  asm volatile("" : : "r,m"(value) : "memory");
+}
+
+// Prevents the compiler from optimizing away an otherwise unused expression.
+template <class T>
+static inline void DoNotOptimize(T& value) {
+  asm volatile("" : "+r,m"(value) : : "memory");
+}
+
+}
+}
+
+// TODO: move these things into the correct namespace
+
 class CapturedStdFd {
  public:
   CapturedStdFd(int std_fd);
