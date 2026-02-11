@@ -23,8 +23,6 @@
 #include <memory>
 #include <vector>
 
-// See also libprocinfo, if you want information about specific processes.
-
 namespace android {
 namespace base {
 
