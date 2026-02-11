@@ -38,9 +38,6 @@ cc_defaults {
         "-Werror",
         "-Wextra",
     ],
-    sanitize: {
-        misc_undefined: ["integer"],
-    },
     target: {
         android: {
             cflags: [
@@ -111,6 +108,12 @@ cc_defaults {
     cppflags: ["-Wexit-time-destructors"],
     shared_libs: ["liblog"],
     target: {
+        android: {
+            sanitize: {
+                misc_undefined: ["integer"],
+            },
+
+        },
         linux: {
             srcs: [
                 "errors_unix.cpp",
@@ -210,6 +213,11 @@ cc_test {
         "test_utils_test.cpp",
     ],
     target: {
+        android: {
+            sanitize: {
+                misc_undefined: ["integer"],
+            },
+        },
         linux: {
             srcs: ["chrono_utils_test.cpp"],
         },
